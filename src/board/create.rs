@@ -14,6 +14,17 @@ use sdl2::{
     Sdl,
 };
 
+#[derive(Debug, PartialEq)]
+pub enum Selected {
+    None,
+    Pawn,
+    Rook,
+    Bishop,
+    Knight,
+    Queen,
+    King,
+}
+
 pub const SQUARE_SIZE: i32 = 64;
 
 pub fn new() -> Result<(), String> {
@@ -42,6 +53,11 @@ pub fn update(
     mut g: Grid,
     _texture: Texture<'_>,
 ) -> Result<(), String> {
+    let mut _selected_num: usize = usize::MAX;
+    let mut _selected: Selected = Selected::None;
+    let mut has_selected = false;
+    let mut move_to = [/*rank*/ 0, /*file*/ 0];
+
     let _rooks = rook::load();
     let _knights = knight::load();
     let _bishops = bishop::load();
@@ -57,6 +73,7 @@ pub fn update(
             if let Event::Quit { .. } = event {
                 break 'app;
             }
+
             if let Event::MouseButtonDown { x, y, .. } = event {
                 if x >= grid_offset_x && y >= grid_offset_y {
                     let grid_x = x - grid_offset_x;
@@ -66,39 +83,71 @@ pub fn update(
                     let rank = 7 - (grid_y / SQUARE_SIZE) + 1;
 
                     if file >= 0 && file <= 8 && rank >= 0 && rank <= 8 {
-                        //println!("Clicked on rank: {}, file: {}", rank, file);
+                        let mut piece_found = false;
+
+                        for (i, r) in _rooks.iter().enumerate() {
+                            if r.rank == rank && r.file == file && !r.dead {
+                                _selected = Selected::Rook;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+                        for (i, k) in _knights.iter().enumerate() {
+                            if k.rank == rank && k.file == file && !k.dead {
+                                _selected = Selected::Knight;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+                        for (i, b) in _bishops.iter().enumerate() {
+                            if b.rank == rank && b.file == file && !b.dead {
+                                _selected = Selected::Bishop;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+                        for (i, p) in _pawns.iter().enumerate() {
+                            if p.rank == rank && p.file == file && !p.dead {
+                                _selected = Selected::Pawn;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+                        for (i, q) in _queens.iter().enumerate() {
+                            if q.rank == rank && q.file == file && !q.dead {
+                                _selected = Selected::Queen;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+                        for (i, kn) in _kings.iter().enumerate() {
+                            if kn.rank == rank && kn.file == file && !kn.dead {
+                                _selected = Selected::King;
+                                _selected_num = i;
+                                has_selected = true;
+                                piece_found = true;
+                            }
+                        }
+
+                        if !piece_found {
+                            if has_selected {
+                                move_to = [rank, file];
+                                println!(
+                                    "Piece {:?} number {} is moving to rank: {} and file: {}",
+                                    _selected, _selected_num, move_to[0], move_to[1]
+                                );
+                                has_selected = false;
+                            } else {
+                                println!("No piece found on rank: {}, file: {}", rank, file);
+                            }
+                        }
                     } else {
                         println!("Click outside the grid");
-                    }
-                    for r in &_rooks {
-                        if r.rank == rank && r.file == file && r.dead == false {
-                            println!("CLICKED ON A ROOK!");
-                        }
-                    }
-                    for k in &_knights {
-                        if k.rank == rank && k.file == file && k.dead == false {
-                            println!("CLICKED ON A KNIGHT!");
-                        }
-                    }
-                    for b in &_bishops {
-                        if b.rank == rank && b.file == file && b.dead == false {
-                            println!("CLICKED ON A BISHOP!");
-                        }
-                    }
-                    for p in &_pawns {
-                        if p.rank == rank && p.file == file && p.dead == false {
-                            println!("CLICKED ON A PAWN!");
-                        }
-                    }
-                    for q in &_queens {
-                        if q.rank == rank && q.file == file && q.dead == false {
-                            println!("CLICKED ON A QUEEN!");
-                        }
-                    }
-                    for kn in &_kings {
-                        if kn.rank == rank && kn.file == file && kn.dead == false {
-                            println!("CLICKED ON A KING");
-                        }
                     }
                 }
             }
