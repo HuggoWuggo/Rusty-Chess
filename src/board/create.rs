@@ -1,3 +1,5 @@
+use std::time::Duration;
+
 use super::grid::*;
 use crate::pieces::*;
 
@@ -42,11 +44,63 @@ pub fn update(
 ) -> Result<(), String> {
     let _rooks = rook::load();
     let _knights = knight::load();
+    let _bishops = bishop::load();
+    let _pawns = pawn::load();
+    let _queens = queen::load();
+    let _kings = king::load();
+
+    let grid_offset_x = 144; // Offset of the grid from the window's left
+    let grid_offset_y = 10; // Offset of the grid from the window's top
 
     'app: loop {
         for event in sdl2_context.event_pump()?.poll_iter() {
             if let Event::Quit { .. } = event {
                 break 'app;
+            }
+            if let Event::MouseButtonDown { x, y, .. } = event {
+                if x >= grid_offset_x && y >= grid_offset_y {
+                    let grid_x = x - grid_offset_x;
+                    let grid_y = y - grid_offset_y;
+
+                    let file = grid_x / SQUARE_SIZE + 1;
+                    let rank = 7 - (grid_y / SQUARE_SIZE) + 1;
+
+                    if file >= 0 && file <= 8 && rank >= 0 && rank <= 8 {
+                        //println!("Clicked on rank: {}, file: {}", rank, file);
+                    } else {
+                        println!("Click outside the grid");
+                    }
+                    for r in &_rooks {
+                        if r.rank == rank && r.file == file && r.dead == false {
+                            println!("CLICKED ON A ROOK!");
+                        }
+                    }
+                    for k in &_knights {
+                        if k.rank == rank && k.file == file && k.dead == false {
+                            println!("CLICKED ON A KNIGHT!");
+                        }
+                    }
+                    for b in &_bishops {
+                        if b.rank == rank && b.file == file && b.dead == false {
+                            println!("CLICKED ON A BISHOP!");
+                        }
+                    }
+                    for p in &_pawns {
+                        if p.rank == rank && p.file == file && p.dead == false {
+                            println!("CLICKED ON A PAWN!");
+                        }
+                    }
+                    for q in &_queens {
+                        if q.rank == rank && q.file == file && q.dead == false {
+                            println!("CLICKED ON A QUEEN!");
+                        }
+                    }
+                    for kn in &_kings {
+                        if kn.rank == rank && kn.file == file && kn.dead == false {
+                            println!("CLICKED ON A KING");
+                        }
+                    }
+                }
             }
         }
 
@@ -82,9 +136,14 @@ pub fn update(
 
         rook::render(&mut canvas, &_texture, &_rooks);
         knight::render(&mut canvas, &_texture, &_knights);
+        bishop::render(&mut canvas, &_texture, &_bishops);
+        pawn::render(&mut canvas, &_texture, &_pawns);
+        queen::render(&mut canvas, &_texture, &_queens);
+        king::render(&mut canvas, &_texture, &_kings);
 
         // Present the canvas to the screen
         canvas.present();
+        std::thread::sleep(Duration::from_millis(16));
     }
     Ok(())
 }
