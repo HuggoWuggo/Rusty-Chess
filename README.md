@@ -6,9 +6,9 @@ The general formula will follow:
 
 1. Get all the pieces onto the board.
 
-**2. Be able to click and move pieces.**
+2. Be able to click and move pieces.
    
-3. Be able to only move pieces to legal locations.
+**3. Be able to only move pieces to legal locations.**
    
 4. Add captures.
    
