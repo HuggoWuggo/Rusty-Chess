@@ -7,27 +7,28 @@ pub struct rook_struct {
 }
 
 pub fn load() -> Vec<rook_struct> {
-    let wlr = rook_struct {
+    let mut wlr = rook_struct {
         rank: 1,
         file: 1,
         dead: false,
     };
-    let blr = rook_struct {
+    let mut blr = rook_struct {
         rank: 8,
         file: 1,
         dead: false,
     };
-    let wrr = rook_struct {
+    let mut wrr = rook_struct {
         rank: 1,
         file: 8,
         dead: false,
     };
-    let brr = rook_struct {
+    let mut brr = rook_struct {
         rank: 8,
         file: 8,
         dead: false,
     };
-    vec![wlr, blr, wrr, brr]
+    let mut v = vec![wlr, blr, wrr, brr];
+    v
 }
 
 pub fn render(

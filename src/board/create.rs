@@ -56,14 +56,14 @@ pub fn update(
     let mut _selected_num: usize = usize::MAX;
     let mut _selected: Selected = Selected::None;
     let mut has_selected = false;
-    let mut move_to = [/*rank*/ 0, /*file*/ 0];
+    let mut move_to: [i32; 2];
 
-    let _rooks = rook::load();
-    let _knights = knight::load();
-    let _bishops = bishop::load();
-    let _pawns = pawn::load();
-    let _queens = queen::load();
-    let _kings = king::load();
+    let mut _rooks = rook::load();
+    let mut _knights = knight::load();
+    let mut _bishops = bishop::load();
+    let mut _pawns = pawn::load();
+    let mut _queens = queen::load();
+    let mut _kings = king::load();
 
     let grid_offset_x = 144; // Offset of the grid from the window's left
     let grid_offset_y = 10; // Offset of the grid from the window's top
@@ -141,6 +141,45 @@ pub fn update(
                                     "Piece {:?} number {} is moving to rank: {} and file: {}",
                                     _selected, _selected_num, move_to[0], move_to[1]
                                 );
+                                match _selected {
+                                    Selected::Rook => {
+                                        if let Some(piece) = _rooks.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::Pawn => {
+                                        if let Some(piece) = _pawns.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::Bishop => {
+                                        if let Some(piece) = _bishops.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::Knight => {
+                                        if let Some(piece) = _knights.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::Queen => {
+                                        if let Some(piece) = _queens.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::King => {
+                                        if let Some(piece) = _kings.get_mut(_selected_num) {
+                                            piece.rank = move_to[0];
+                                            piece.file = move_to[1];
+                                        }
+                                    }
+                                    Selected::None => {}
+                                }
                                 has_selected = false;
                             } else {
                                 println!("No piece found on rank: {}, file: {}", rank, file);
